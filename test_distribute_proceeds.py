@@ -1,6 +1,8 @@
 import unittest
 
-from distribute_proceeds import distribute_proceeds
+from distribute_proceeds_for_krakatoa_ventures import (
+    distribute_proceeds_for_krakatoa_ventures,
+)
 
 
 class TestDistributeProceedsForKrakatoaVentures(unittest.TestCase):
@@ -29,9 +31,10 @@ class TestDistributeProceedsForKrakatoaVentures(unittest.TestCase):
 
     def test_distribute_0_dollars(self):
         cash_proceeds = 0
-        class_distribution, member_distribution = distribute_proceeds(
-            cash_proceeds, self.cap_table
-        )
+        (
+            class_distribution,
+            member_distribution,
+        ) = distribute_proceeds_for_krakatoa_ventures(cash_proceeds, self.cap_table)
 
         class_distribution_total = sum(class_distribution.values())
         member_distribution_total = sum(member_distribution.values())
@@ -45,9 +48,10 @@ class TestDistributeProceedsForKrakatoaVentures(unittest.TestCase):
 
     def test_distribute_100_dollars(self):
         cash_proceeds = 10000
-        class_distribution, member_distribution = distribute_proceeds(
-            cash_proceeds, self.cap_table
-        )
+        (
+            class_distribution,
+            member_distribution,
+        ) = distribute_proceeds_for_krakatoa_ventures(cash_proceeds, self.cap_table)
 
         class_distribution_total = sum(class_distribution.values())
         member_distribution_total = sum(member_distribution.values())
@@ -61,9 +65,10 @@ class TestDistributeProceedsForKrakatoaVentures(unittest.TestCase):
 
     def test_distribute_250_dollars_and_50_cents(self):
         cash_proceeds = 25050
-        class_distribution, member_distribution = distribute_proceeds(
-            cash_proceeds, self.cap_table
-        )
+        (
+            class_distribution,
+            member_distribution,
+        ) = distribute_proceeds_for_krakatoa_ventures(cash_proceeds, self.cap_table)
 
         class_distribution_total = sum(class_distribution.values())
         member_distribution_total = sum(member_distribution.values())
@@ -77,9 +82,10 @@ class TestDistributeProceedsForKrakatoaVentures(unittest.TestCase):
 
     def test_distribute_500_dollars(self):
         cash_proceeds = 50000
-        class_distribution, member_distribution = distribute_proceeds(
-            cash_proceeds, self.cap_table
-        )
+        (
+            class_distribution,
+            member_distribution,
+        ) = distribute_proceeds_for_krakatoa_ventures(cash_proceeds, self.cap_table)
 
         class_distribution_total = sum(class_distribution.values())
         member_distribution_total = sum(member_distribution.values())
@@ -93,9 +99,10 @@ class TestDistributeProceedsForKrakatoaVentures(unittest.TestCase):
 
     def test_distribute_1000_dollars(self):
         cash_proceeds = 100000
-        class_distribution, member_distribution = distribute_proceeds(
-            cash_proceeds, self.cap_table
-        )
+        (
+            class_distribution,
+            member_distribution,
+        ) = distribute_proceeds_for_krakatoa_ventures(cash_proceeds, self.cap_table)
 
         class_distribution_total = sum(class_distribution.values())
         member_distribution_total = sum(member_distribution.values())
