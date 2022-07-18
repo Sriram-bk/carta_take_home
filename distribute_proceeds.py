@@ -216,7 +216,7 @@ def distribute_proceeds(
         net_member_distribution = merge_distributions(
             net_member_distribution, member_distribution
         )
-    
+
     for share_class, class_details in cap_table.items():
         class_unit_holders = class_details["unit_holders"]
 

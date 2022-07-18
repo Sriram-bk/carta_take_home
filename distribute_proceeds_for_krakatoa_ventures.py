@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # Convert cash proceeds to cents
+    # Convert cash proceeds in dollars to cents
     cash_proceeds = round(args.cash_proceeds * 100)
 
     class_distribution, member_distribution = distribute_proceeds(
