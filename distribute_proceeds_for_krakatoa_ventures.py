@@ -1,7 +1,82 @@
 import argparse
+from collections import defaultdict
 from pprint import pprint
+from typing import DefaultDict, Dict, Tuple
 
-from distribute_proceeds import distribute_proceeds
+from distribute_proceeds import (
+    distribute_proceeds_till_holders_recoup_amount_invested,
+    distribute_remaining_proceeds_to_holders,
+    merge_distributions,
+)
+
+
+def distribute_proceeds_for_krakatoa_ventures(
+    cash_proceeds: int, cap_table: Dict[str, Dict]
+) -> Tuple[DefaultDict[str, int], DefaultDict[str, int]]:
+    """
+    Distribute cash_proceeds to unit holders based on the cap_table structure for Krakatoa Ventures.
+
+    The cash distribution is done in the following manner :
+    1. Proceeds are distributed exclusively amongst 'Class B' unit holders in proportion to the number
+    of units held, until the total amount distributed to each holder reaches their total amount invested.
+    2. Further proceeds are distributed to 'Class C', 'Class B' and 'Class A' holders in proportion to their
+    number of units held.
+
+    Args:
+        amount (int): The amount of cash proceeds to distribute in cents.
+        cap_table (Dict[str, Dict]): The cap_table of the venture capital firm
+
+    Returns:
+        Tuple[int, DefaultDict[str, int], DefaultDict[str, int]]:
+            A tuple containing the class_distribution and the member_distribution.
+    """
+    net_member_distribution = defaultdict(int)
+    net_class_distribution = defaultdict(int)
+
+    b_class_unit_holders = cap_table["B"]["unit_holders"]
+    total_b_class_units = cap_table["B"]["total_membership_units_held"]
+
+    (
+        remaining_amount,
+        class_distribution,
+        member_distribution,
+    ) = distribute_proceeds_till_holders_recoup_amount_invested(
+        cash_proceeds, "B", b_class_unit_holders, total_b_class_units
+    )
+
+    net_class_distribution = merge_distributions(
+        net_class_distribution, class_distribution
+    )
+    net_member_distribution = merge_distributions(
+        net_member_distribution, member_distribution
+    )
+
+    if remaining_amount > 0:
+        (
+            class_distribution,
+            member_distribution,
+        ) = distribute_remaining_proceeds_to_holders(remaining_amount, cap_table)
+
+        net_class_distribution = merge_distributions(
+            net_class_distribution, class_distribution
+        )
+        net_member_distribution = merge_distributions(
+            net_member_distribution, member_distribution
+        )
+
+    for share_class, class_details in cap_table.items():
+        class_unit_holders = class_details["unit_holders"]
+
+        if share_class not in class_distribution:
+            net_class_distribution[share_class] = 0
+
+        for unit_holder in class_unit_holders:
+            holder_name = unit_holder["name"]
+            if holder_name not in member_distribution:
+                net_member_distribution[holder_name] = 0
+
+    return (net_class_distribution, net_member_distribution)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -38,7 +113,7 @@ if __name__ == "__main__":
     # Convert cash proceeds in dollars to cents
     cash_proceeds = round(args.cash_proceeds * 100)
 
-    class_distribution, member_distribution = distribute_proceeds(
+    class_distribution, member_distribution = distribute_proceeds_for_krakatoa_ventures(
         cash_proceeds, CAP_TABLE
     )
 
