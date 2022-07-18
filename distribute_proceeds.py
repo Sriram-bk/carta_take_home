@@ -1,24 +1,5 @@
 from collections import defaultdict
-from pprint import pprint
 from typing import DefaultDict, Dict, List, Tuple
-
-CAP_TABLE = {
-    "A": {
-        "total_membership_units_held": 10,
-        "unit_holders": [{"name": "David", "units_held": 10, "amount_invested": 0}],
-    },
-    "B": {
-        "total_membership_units_held": 20,
-        "unit_holders": [
-            {"name": "Alex", "units_held": 10, "amount_invested": 25000},
-            {"name": "Becky", "units_held": 10, "amount_invested": 25000},
-        ],
-    },
-    "C": {
-        "total_membership_units_held": 5,
-        "unit_holders": [{"name": "Becky", "units_held": 5, "amount_invested": 0}],
-    },
-}
 
 
 def merge_distributions(
@@ -51,7 +32,8 @@ def distribute_proceeds_till_holders_recoup_amount_invested(
         total_membership_units_held (int): The total number of units held in this share_class
 
     Returns:
-        Tuple[int, DefaultDict[str, int], DefaultDict[str, int]]: _description_
+        Tuple[int, DefaultDict[str, int], DefaultDict[str, int]]:
+            A tuple containing the class_distribution and the member_distribution.
     """
     member_distribution = defaultdict(int)
     class_distribution = defaultdict(int)
@@ -74,7 +56,7 @@ def distribute_proceeds_till_holders_recoup_amount_invested(
             holders_still_to_be_paid_out.append(
                 {
                     "name": holder_name,
-                    "amount_invested":  amount_invested - amount_distributed,
+                    "amount_invested": amount_invested - amount_distributed,
                     "units_held": units_held,
                 }
             )
@@ -236,27 +218,3 @@ def distribute_proceeds(
         )
 
     return (net_class_distribution, net_member_distribution)
-
-
-if __name__ == "__main__":
-    class_distribution, member_distribution = distribute_proceeds(100000, CAP_TABLE)
-
-    for share_class, class_details in CAP_TABLE.items():
-        class_unit_holders = class_details["unit_holders"]
-
-        if share_class not in class_distribution:
-            class_distribution[share_class] = 0
-        
-        for unit_holder in class_unit_holders:
-            holder_name = unit_holder["name"]
-            if holder_name not in member_distribution:
-                member_distribution[holder_name] = 0
-    
-    # Convert cents back into dollars for user output
-    for share_class, amount in class_distribution.items():
-        class_distribution[share_class] /= 100
-    for member, amount in member_distribution.items():
-        member_distribution[member] /= 100
-
-    pprint(dict(member_distribution), indent=4)
-    pprint(dict(class_distribution), indent=4)
