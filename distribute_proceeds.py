@@ -216,5 +216,16 @@ def distribute_proceeds(
         net_member_distribution = merge_distributions(
             net_member_distribution, member_distribution
         )
+    
+    for share_class, class_details in cap_table.items():
+        class_unit_holders = class_details["unit_holders"]
+
+        if share_class not in class_distribution:
+            net_class_distribution[share_class] = 0
+
+        for unit_holder in class_unit_holders:
+            holder_name = unit_holder["name"]
+            if holder_name not in member_distribution:
+                net_member_distribution[holder_name] = 0
 
     return (net_class_distribution, net_member_distribution)

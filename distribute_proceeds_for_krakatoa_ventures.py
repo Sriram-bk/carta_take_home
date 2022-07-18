@@ -42,17 +42,6 @@ if __name__ == "__main__":
         cash_proceeds, CAP_TABLE
     )
 
-    for share_class, class_details in CAP_TABLE.items():
-        class_unit_holders = class_details["unit_holders"]
-
-        if share_class not in class_distribution:
-            class_distribution[share_class] = 0
-
-        for unit_holder in class_unit_holders:
-            holder_name = unit_holder["name"]
-            if holder_name not in member_distribution:
-                member_distribution[holder_name] = 0
-
     # Convert cents back into dollars for user output
     for share_class, amount in class_distribution.items():
         class_distribution[share_class] /= 100
